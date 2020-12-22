@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 /// null. Set [title] and [backLabel] to controll the look and feel or set
 /// [LoadingDialog.defaultTitle], [LoadingDialog.defaultBackLabel] and
 /// [LoadingDialog.defaultOnError] to have global preferences.
-Future<T> showFutureLoadingDialog<T>({
+Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
   @required BuildContext context,
   @required Future<T> Function() future,
   String title,
@@ -30,13 +30,13 @@ Future<T> showFutureLoadingDialog<T>({
     onError: onError,
   );
   if (dialog.isCupertinoStyle) {
-    return showCupertinoDialog<T>(
+    return showCupertinoDialog<LoadingDialogResult<T>>(
       barrierDismissible: barrierDismissible,
       context: context,
       builder: (BuildContext context) => dialog,
     );
   }
-  return showDialog<T>(
+  return showDialog<LoadingDialogResult<T>>(
     context: context,
     barrierDismissible: barrierDismissible,
     builder: (BuildContext context) => dialog,
@@ -69,12 +69,18 @@ class LoadingDialog<T> extends StatefulWidget {
 
 class _LoadingDialogState<T> extends State<LoadingDialog> {
   dynamic exception;
+  StackTrace stackTrace;
 
   @override
   void initState() {
     super.initState();
-    widget.future().then((result) => Navigator.of(context).pop<T>(result),
-        onError: (e) => setState(() => exception = e));
+    widget.future().then(
+        (result) => Navigator.of(context)
+            .pop<LoadingDialogResult<T>>(LoadingDialogResult(result: result)),
+        onError: (e, s) => setState(() {
+              exception = e;
+              stackTrace = s;
+            }));
   }
 
   @override
@@ -113,9 +119,22 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
         if (exception != null)
           FlatButton(
             child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
-            onPressed: Navigator.of(context).pop,
+            onPressed: () => Navigator.of(context).pop<LoadingDialogResult<T>>(
+              LoadingDialogResult(
+                error: exception,
+                stackTrace: stackTrace,
+              ),
+            ),
           ),
       ],
     );
   }
+}
+
+class LoadingDialogResult<T> {
+  final T result;
+  final dynamic error;
+  final StackTrace stackTrace;
+
+  LoadingDialogResult({this.result, this.error, this.stackTrace});
 }
