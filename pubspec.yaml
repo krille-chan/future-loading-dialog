@@ -1,0 +1,17 @@
+name: future_loading_dialog
+description: A starting point for Dart libraries or applications.
+version: 0.1.0
+homepage: https://famedly.com
+repository: https://gitlab.com/famedly/libraries/future_loading_dialog
+
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  pedantic: ^1.9.0
+  flutter_test:
+    sdk: flutter

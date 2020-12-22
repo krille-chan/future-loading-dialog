@@ -1,0 +1,23 @@
+image: registry.gitlab.com/famedly/containers/flutter-dockerimages:stable
+
+
+stages:
+  - coverage
+  - deploy
+
+code_analyze:
+  tags:
+    - docker
+  stage: coverage
+  script:
+    - flutter pub get
+    - flutter analyze
+    - flutter format lib/ test/ --set-exit-if-changed
+
+coverage:
+  tags:
+    - docker
+  stage: coverage
+  script:
+    - flutter pub get
+    - flutter test
