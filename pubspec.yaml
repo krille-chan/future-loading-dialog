@@ -1,5 +1,5 @@
 name: future_loading_dialog
-description: A starting point for Dart libraries or applications.
+description: Easy to use adaptive loading dialog to visualize a Dart Future.
 version: 0.1.0
 homepage: https://famedly.com
 repository: https://gitlab.com/famedly/libraries/future_loading_dialog

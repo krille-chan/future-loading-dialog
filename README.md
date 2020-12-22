@@ -1,22 +1,31 @@
-A library for Dart developers.
+# Future Loading Dialog
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+Easy to use adaptive loading dialog to visualize a Dart Future.
 
-## Usage
+Displays a loading dialog which reacts to the given [future]. The dialog
+will be dismissed and the value will be returned when the future completes.
+If an error occured, then [onError] will be called and this method returns
+null. Set [title] and [backLabel] to controll the look and feel or set
+[LoadingDialog.defaultTitle], [LoadingDialog.defaultBackLabel] and
+[LoadingDialog.defaultOnError] to have global preferences.
 
-A simple usage example:
+### Example:
+
+Will display a loading dialog for one second.
 
 ```dart
-import 'package:future_loading_dialog/future_loading_dialog.dart';
-
-main() {
-  var awesome = new Awesome();
-}
+MaterialApp(
+  title: 'Test',
+  home: Scaffold(
+    body: Builder(
+      builder: (context) => RaisedButton(
+        child: Text('Test'),
+        onPressed: () => showFutureLoadingDialog(
+          context: context,
+          future: Future.delayed(Duration(seconds: 1)),
+        ),
+      ),
+    ),
+  ),
+);
 ```
-
-## Features and bugs
-
-Please file feature requests and bugs at the [issue tracker][tracker].
-
-[tracker]: http://example.com/issues/replaceme
