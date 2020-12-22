@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 /// [LoadingDialog.defaultOnError] to have global preferences.
 Future<T> showFutureLoadingDialog<T>({
   @required BuildContext context,
-  @required Future<T> future,
+  @required Future<T> Function() future,
   String title,
   String backLabel,
   String Function(dynamic exception) onError,
@@ -46,7 +46,7 @@ Future<T> showFutureLoadingDialog<T>({
 class LoadingDialog<T> extends StatefulWidget {
   final String title;
   final String backLabel;
-  final Future<T> future;
+  final Future<T> Function() future;
   final String Function(dynamic exception) onError;
 
   static String defaultTitle = 'Loading... Please Wait!';
@@ -73,9 +73,8 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
   @override
   void initState() {
     super.initState();
-    widget.future.catchError((e) => setState(() => exception = e)).then(
-        (result) =>
-            exception == null ? Navigator.of(context).pop<T>(result) : null);
+    widget.future().then((result) => Navigator.of(context).pop<T>(result),
+        onError: (e) => setState(() => exception = e));
   }
 
   @override

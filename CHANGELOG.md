@@ -1,10 +1,6 @@
-## [0.1.2]
-
-* Add column view safe area
-
 ## [0.1.1]
 
-* Fix missing null check
+* Use `Future<T> Function()` instead of `Future<T>`
 
 ## [0.1.0] - Initial Release
 

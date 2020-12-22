@@ -19,7 +19,7 @@ void main() {
               child: Text('Test'),
               onPressed: () => showFutureLoadingDialog(
                 context: context,
-                future: Future.delayed(Duration(seconds: 1)),
+                future: () => Future.delayed(Duration(seconds: 1)),
               ),
             ),
           ),
@@ -46,12 +46,11 @@ void main() {
             builder: (context) => RaisedButton(
               child: Text('Test'),
               onPressed: () => showFutureLoadingDialog(
-                context: context,
-                future: Future.microtask(() async {
-                  await Future.delayed(Duration(seconds: 1));
-                  throw 'Oops';
-                }),
-              ),
+                  context: context,
+                  future: () async {
+                    await Future.delayed(Duration(seconds: 1));
+                    throw 'Oops';
+                  }),
             ),
           ),
         ),

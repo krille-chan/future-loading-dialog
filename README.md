@@ -22,7 +22,7 @@ MaterialApp(
         child: Text('Test'),
         onPressed: () => showFutureLoadingDialog(
           context: context,
-          future: Future.delayed(Duration(seconds: 1)),
+          future: () => Future.delayed(Duration(seconds: 1)),
         ),
       ),
     ),
