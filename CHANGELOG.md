@@ -1,3 +1,7 @@
+## [0.2.1]
+
+* Make result not null
+
 ## [0.2.0]
 
 * Migrate to null safety

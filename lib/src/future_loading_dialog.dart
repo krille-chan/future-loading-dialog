@@ -15,32 +15,36 @@ import 'package:flutter/material.dart';
 /// null. Set [title] and [backLabel] to controll the look and feel or set
 /// [LoadingDialog.defaultTitle], [LoadingDialog.defaultBackLabel] and
 /// [LoadingDialog.defaultOnError] to have global preferences.
-Future<LoadingDialogResult<T>?> showFutureLoadingDialog<T>({
+Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
   required BuildContext context,
   required Future<T> Function() future,
   String? title,
   String? backLabel,
   String Function(dynamic exception)? onError,
   bool barrierDismissible = false,
-}) {
+}) async {
   final dialog = LoadingDialog<T>(
     future: future,
     title: title,
     backLabel: backLabel,
     onError: onError,
   );
-  if (dialog.isCupertinoStyle) {
-    return showCupertinoDialog<LoadingDialogResult<T>>(
-      barrierDismissible: barrierDismissible,
-      context: context,
-      builder: (BuildContext context) => dialog,
-    );
-  }
-  return showDialog<LoadingDialogResult<T>>(
-    context: context,
-    barrierDismissible: barrierDismissible,
-    builder: (BuildContext context) => dialog,
-  );
+  final result = dialog.isCupertinoStyle
+      ? await showCupertinoDialog<LoadingDialogResult<T>>(
+          barrierDismissible: barrierDismissible,
+          context: context,
+          builder: (BuildContext context) => dialog,
+        )
+      : await showDialog<LoadingDialogResult<T>>(
+          context: context,
+          barrierDismissible: barrierDismissible,
+          builder: (BuildContext context) => dialog,
+        );
+  return result ??
+      LoadingDialogResult<T>(
+        error: Exception('FutureDialog canceled'),
+        stackTrace: StackTrace.current,
+      );
 }
 
 class LoadingDialog<T> extends StatefulWidget {
