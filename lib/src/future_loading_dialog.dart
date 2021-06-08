@@ -15,12 +15,12 @@ import 'package:flutter/material.dart';
 /// null. Set [title] and [backLabel] to controll the look and feel or set
 /// [LoadingDialog.defaultTitle], [LoadingDialog.defaultBackLabel] and
 /// [LoadingDialog.defaultOnError] to have global preferences.
-Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
-  @required BuildContext context,
-  @required Future<T> Function() future,
-  String title,
-  String backLabel,
-  String Function(dynamic exception) onError,
+Future<LoadingDialogResult<T>?> showFutureLoadingDialog<T>({
+  required BuildContext context,
+  required Future<T> Function() future,
+  String? title,
+  String? backLabel,
+  String Function(dynamic exception)? onError,
   bool barrierDismissible = false,
 }) {
   final dialog = LoadingDialog<T>(
@@ -44,10 +44,10 @@ Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
 }
 
 class LoadingDialog<T> extends StatefulWidget {
-  final String title;
-  final String backLabel;
+  final String? title;
+  final String? backLabel;
   final Future<T> Function() future;
-  final String Function(dynamic exception) onError;
+  final String Function(dynamic exception)? onError;
 
   static String defaultTitle = 'Loading... Please Wait!';
   static String defaultBackLabel = 'Back';
@@ -57,8 +57,8 @@ class LoadingDialog<T> extends StatefulWidget {
   bool get isCupertinoStyle => !kIsWeb && Platform.isIOS;
 
   const LoadingDialog({
-    Key key,
-    @required this.future,
+    Key? key,
+    required this.future,
     this.title,
     this.onError,
     this.backLabel,
@@ -69,7 +69,7 @@ class LoadingDialog<T> extends StatefulWidget {
 
 class _LoadingDialogState<T> extends State<LoadingDialog> {
   dynamic exception;
-  StackTrace stackTrace;
+  StackTrace? stackTrace;
 
   @override
   void initState() {
@@ -97,8 +97,8 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
         actions: [
           if (exception != null)
             CupertinoDialogAction(
-              child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
               onPressed: Navigator.of(context).pop,
+              child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
             )
         ],
       );
@@ -117,14 +117,14 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
           : LinearProgressIndicator(),
       actions: [
         if (exception != null)
-          FlatButton(
-            child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
+          TextButton(
             onPressed: () => Navigator.of(context).pop<LoadingDialogResult<T>>(
               LoadingDialogResult(
                 error: exception,
                 stackTrace: stackTrace,
               ),
             ),
+            child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
           ),
       ],
     );
@@ -132,9 +132,9 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
 }
 
 class LoadingDialogResult<T> {
-  final T result;
+  final T? result;
   final dynamic error;
-  final StackTrace stackTrace;
+  final StackTrace? stackTrace;
 
   LoadingDialogResult({this.result, this.error, this.stackTrace});
 }

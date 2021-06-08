@@ -1,11 +1,11 @@
 name: future_loading_dialog
 description: Easy to use adaptive loading dialog to visualize a Dart Future.
-version: 0.1.2
+version: 0.2.0
 homepage: https://famedly.com
 repository: https://gitlab.com/famedly/libraries/future_loading_dialog
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:

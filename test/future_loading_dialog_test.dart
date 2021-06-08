@@ -15,19 +15,19 @@ void main() {
         title: 'Test',
         home: Scaffold(
           body: Builder(
-            builder: (context) => RaisedButton(
-              child: Text('Test'),
+            builder: (context) => ElevatedButton(
               onPressed: () => showFutureLoadingDialog(
                 context: context,
                 future: () => Future.delayed(Duration(seconds: 1)),
               ),
+              child: Text('Test'),
             ),
           ),
         ),
       ),
     );
 
-    await tester.tap(find.byType(RaisedButton));
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pump(Duration(milliseconds: 100));
     expect(find.text('Loading... Please Wait!'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
@@ -43,26 +43,26 @@ void main() {
         title: 'Test',
         home: Scaffold(
           body: Builder(
-            builder: (context) => RaisedButton(
-              child: Text('Test'),
+            builder: (context) => ElevatedButton(
               onPressed: () => showFutureLoadingDialog(
                   context: context,
                   future: () async {
                     await Future.delayed(Duration(seconds: 1));
                     throw 'Oops';
                   }),
+              child: Text('Test'),
             ),
           ),
         ),
       ),
     );
 
-    await tester.tap(find.byType(RaisedButton));
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pump(Duration(milliseconds: 100));
     expect(find.text('Loading... Please Wait!'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
     await tester.pump(Duration(seconds: 1));
     expect(find.text('Oops'), findsOneWidget);
-    expect(find.byType(FlatButton), findsOneWidget);
+    expect(find.byType(TextButton), findsOneWidget);
   });
 }
