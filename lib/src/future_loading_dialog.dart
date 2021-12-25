@@ -97,16 +97,15 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
     final content = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (exception != null)
-          const Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: CircularProgressIndicator.adaptive(),
-          )
-        else
-          const Icon(
-            Icons.error_outline_outlined,
-            color: Colors.red,
-          ),
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: exception == null
+              ? const CircularProgressIndicator.adaptive()
+              : const Icon(
+                  Icons.error_outline_outlined,
+                  color: Colors.red,
+                ),
+        ),
         Text(titleLabel),
       ],
     );
