@@ -55,6 +55,7 @@ class LoadingDialog<T> extends StatefulWidget {
 
   static String defaultTitle = 'Loading... Please Wait!';
   static String defaultBackLabel = 'Back';
+  // ignore: prefer_function_declarations_over_variables
   static String Function(dynamic exception) defaultOnError =
       (exception) => exception.toString();
 
@@ -93,11 +94,26 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
         ? widget.onError?.call(exception) ??
             LoadingDialog.defaultOnError(exception)
         : widget.title ?? LoadingDialog.defaultTitle;
+    final content = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (exception != null)
+          const Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: CircularProgressIndicator.adaptive(),
+          )
+        else
+          const Icon(
+            Icons.error_outline_outlined,
+            color: Colors.red,
+          ),
+        Text(titleLabel),
+      ],
+    );
 
     if (widget.isCupertinoStyle) {
       return CupertinoAlertDialog(
-        title: Text(titleLabel),
-        content: exception != null ? null : CupertinoActivityIndicator(),
+        content: content,
         actions: [
           if (exception != null)
             CupertinoDialogAction(
@@ -108,17 +124,7 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
       );
     }
     return AlertDialog(
-      title: exception == null ? Text(titleLabel) : null,
-      content: exception != null
-          ? ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(
-                Icons.error_outline_outlined,
-                color: Colors.red,
-              ),
-              title: Text(titleLabel),
-            )
-          : LinearProgressIndicator(),
+      content: content,
       actions: [
         if (exception != null)
           TextButton(

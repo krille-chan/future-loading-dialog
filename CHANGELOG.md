@@ -1,3 +1,6 @@
+## [0.2.2]
+* refactor: Switch to flutter lints and new design
+
 ## [0.2.1]
 
 * Make result not null

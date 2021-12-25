@@ -18,9 +18,9 @@ void main() {
             builder: (context) => ElevatedButton(
               onPressed: () => showFutureLoadingDialog(
                 context: context,
-                future: () => Future.delayed(Duration(seconds: 1)),
+                future: () => Future.delayed(const Duration(seconds: 1)),
               ),
-              child: Text('Test'),
+              child: const Text('Test'),
             ),
           ),
         ),
@@ -28,10 +28,10 @@ void main() {
     );
 
     await tester.tap(find.byType(ElevatedButton));
-    await tester.pump(Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Loading... Please Wait!'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
-    await tester.pump(Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
     expect(find.text('Loading... Please Wait!'), findsNothing);
     expect(find.byType(LinearProgressIndicator), findsNothing);
   });
@@ -47,10 +47,10 @@ void main() {
               onPressed: () => showFutureLoadingDialog(
                   context: context,
                   future: () async {
-                    await Future.delayed(Duration(seconds: 1));
+                    await Future.delayed(const Duration(seconds: 1));
                     throw 'Oops';
                   }),
-              child: Text('Test'),
+              child: const Text('Test'),
             ),
           ),
         ),
@@ -58,10 +58,10 @@ void main() {
     );
 
     await tester.tap(find.byType(ElevatedButton));
-    await tester.pump(Duration(milliseconds: 100));
+    await tester.pump(const Duration(milliseconds: 100));
     expect(find.text('Loading... Please Wait!'), findsOneWidget);
     expect(find.byType(LinearProgressIndicator), findsOneWidget);
-    await tester.pump(Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
     expect(find.text('Oops'), findsOneWidget);
     expect(find.byType(TextButton), findsOneWidget);
   });
