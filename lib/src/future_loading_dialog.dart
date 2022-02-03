@@ -98,7 +98,7 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.only(right: 8.0),
+          padding: const EdgeInsets.only(right: 16.0),
           child: exception == null
               ? const CircularProgressIndicator.adaptive()
               : const Icon(

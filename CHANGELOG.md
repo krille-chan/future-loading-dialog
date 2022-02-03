@@ -1,3 +1,6 @@
+## [0.2.3]
+* design: Adjust padding
+
 ## [0.2.2]
 * refactor: Switch to flutter lints and new design
 
