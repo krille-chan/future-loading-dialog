@@ -1,4 +1,4 @@
-image: registry.gitlab.com/famedly/containers/flutter-dockerimages:stable
+image: cirrusci/flutter
 
 
 stages:
