@@ -106,7 +106,7 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
                   color: Colors.red,
                 ),
         ),
-        Text(titleLabel),
+        Expanded(child: Text(titleLabel)),
       ],
     );
 
