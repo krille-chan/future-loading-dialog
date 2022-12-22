@@ -1,3 +1,6 @@
+## [0.2.4]
+* fix: Make sure that text is not overflowing
+
 ## [0.2.3]
 * design: Adjust padding
 

@@ -1,6 +1,6 @@
 name: future_loading_dialog
 description: Easy to use adaptive loading dialog to visualize a Dart Future.
-version: 0.2.3
+version: 0.2.4
 homepage: https://famedly.com
 repository: https://gitlab.com/KrilleFear/future_loading_dialog
 
