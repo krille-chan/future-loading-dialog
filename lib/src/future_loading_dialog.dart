@@ -4,10 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import 'dart:async';
-import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:async/async.dart';
@@ -26,25 +23,16 @@ Future<Result<T>> showFutureLoadingDialog<T>({
   String Function(dynamic exception)? onError,
   bool barrierDismissible = false,
 }) async {
-  final dialog = LoadingDialog<T>(
-    future: future,
-    title: title,
-    backLabel: backLabel,
-    onError: onError,
+  final result = await showAdaptiveDialog<Result<T>>(
+    context: context,
+    barrierDismissible: barrierDismissible,
+    builder: (BuildContext context) => LoadingDialog<T>(
+      future: future,
+      title: title,
+      backLabel: backLabel,
+      onError: onError,
+    ),
   );
-  final result = dialog.isCupertinoStyle
-      // ignore: use_build_context_synchronously
-      ? await showCupertinoDialog<Result<T>>(
-          barrierDismissible: barrierDismissible,
-          context: context,
-          builder: (BuildContext context) => dialog,
-        )
-      // ignore: use_build_context_synchronously
-      : await showDialog<Result<T>>(
-          context: context,
-          barrierDismissible: barrierDismissible,
-          builder: (BuildContext context) => dialog,
-        );
   return result ??
       Result.error(
         Exception('FutureDialog canceled'),
@@ -63,8 +51,6 @@ class LoadingDialog<T> extends StatefulWidget {
   // ignore: prefer_function_declarations_over_variables
   static String Function(dynamic exception) defaultOnError =
       (exception) => exception.toString();
-
-  bool get isCupertinoStyle => !kIsWeb && Platform.isIOS;
 
   const LoadingDialog({
     Key? key,
@@ -98,53 +84,45 @@ class LoadingDialogState<T> extends State<LoadingDialog> {
         ? widget.onError?.call(exception) ??
             LoadingDialog.defaultOnError(exception)
         : widget.title ?? LoadingDialog.defaultTitle;
-    final content = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0),
-          child: exception == null
-              ? const CircularProgressIndicator.adaptive()
-              : const Icon(
-                  Icons.error_outline_outlined,
-                  color: Colors.red,
-                ),
-        ),
-        Expanded(
-          child: Text(
-            titleLabel,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
 
-    if (widget.isCupertinoStyle) {
-      return CupertinoAlertDialog(
-        content: content,
-        actions: [
-          if (exception != null)
-            CupertinoDialogAction(
-              onPressed: Navigator.of(context).pop,
-              child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
-            )
-        ],
-      );
-    }
-    return AlertDialog(
-      content: content,
-      actions: [
-        if (exception != null)
-          TextButton(
-            onPressed: () => Navigator.of(context).pop<Result<T>>(
-              Result.error(
-                exception,
-                stackTrace,
+    return AlertDialog.adaptive(
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 256),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (exception == null)
+              const CircularProgressIndicator.adaptive()
+            else
+              const Icon(
+                Icons.error_outline_outlined,
+                color: Colors.red,
+              ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                titleLabel,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
-          ),
-      ],
+          ],
+        ),
+      ),
+      actions: exception == null
+          ? null
+          : [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop<Result<T>>(
+                  Result.error(
+                    exception,
+                    stackTrace,
+                  ),
+                ),
+                child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
+              ),
+            ],
     );
   }
 }

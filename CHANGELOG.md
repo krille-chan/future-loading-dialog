@@ -1,3 +1,8 @@
+## [0.3.0]
+* build: Make Dart 3 compatible
+* refactor: Use Result type from async library
+* design: Refine design a little bit
+
 ## [0.2.4]
 * fix: Make sure that text is not overflowing
 
