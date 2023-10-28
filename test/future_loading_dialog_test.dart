@@ -3,9 +3,11 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import 'package:future_loading_dialog/future_loading_dialog.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
+import 'package:future_loading_dialog/future_loading_dialog.dart';
 
 void main() {
   testWidgets('Future Loading Dialog', (WidgetTester tester) async {

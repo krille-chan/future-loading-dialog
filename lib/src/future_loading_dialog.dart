@@ -5,9 +5,12 @@
 
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import 'package:async/async.dart';
 
 /// Displays a loading dialog which reacts to the given [future]. The dialog
 /// will be dismissed and the value will be returned when the future completes.
@@ -15,7 +18,7 @@ import 'package:flutter/material.dart';
 /// null. Set [title] and [backLabel] to controll the look and feel or set
 /// [LoadingDialog.defaultTitle], [LoadingDialog.defaultBackLabel] and
 /// [LoadingDialog.defaultOnError] to have global preferences.
-Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
+Future<Result<T>> showFutureLoadingDialog<T>({
   required BuildContext context,
   required Future<T> Function() future,
   String? title,
@@ -30,20 +33,22 @@ Future<LoadingDialogResult<T>> showFutureLoadingDialog<T>({
     onError: onError,
   );
   final result = dialog.isCupertinoStyle
-      ? await showCupertinoDialog<LoadingDialogResult<T>>(
+      // ignore: use_build_context_synchronously
+      ? await showCupertinoDialog<Result<T>>(
           barrierDismissible: barrierDismissible,
           context: context,
           builder: (BuildContext context) => dialog,
         )
-      : await showDialog<LoadingDialogResult<T>>(
+      // ignore: use_build_context_synchronously
+      : await showDialog<Result<T>>(
           context: context,
           barrierDismissible: barrierDismissible,
           builder: (BuildContext context) => dialog,
         );
   return result ??
-      LoadingDialogResult<T>(
-        error: Exception('FutureDialog canceled'),
-        stackTrace: StackTrace.current,
+      Result.error(
+        Exception('FutureDialog canceled'),
+        StackTrace.current,
       );
 }
 
@@ -69,10 +74,10 @@ class LoadingDialog<T> extends StatefulWidget {
     this.backLabel,
   }) : super(key: key);
   @override
-  _LoadingDialogState<T> createState() => _LoadingDialogState<T>();
+  LoadingDialogState<T> createState() => LoadingDialogState<T>();
 }
 
-class _LoadingDialogState<T> extends State<LoadingDialog> {
+class LoadingDialogState<T> extends State<LoadingDialog> {
   dynamic exception;
   StackTrace? stackTrace;
 
@@ -80,8 +85,7 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
   void initState() {
     super.initState();
     widget.future().then(
-        (result) => Navigator.of(context)
-            .pop<LoadingDialogResult<T>>(LoadingDialogResult(result: result)),
+        (result) => Navigator.of(context).pop<Result<T>>(Result.value(result)),
         onError: (e, s) => setState(() {
               exception = e;
               stackTrace = s;
@@ -132,10 +136,10 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
       actions: [
         if (exception != null)
           TextButton(
-            onPressed: () => Navigator.of(context).pop<LoadingDialogResult<T>>(
-              LoadingDialogResult(
-                error: exception,
-                stackTrace: stackTrace,
+            onPressed: () => Navigator.of(context).pop<Result<T>>(
+              Result.error(
+                exception,
+                stackTrace,
               ),
             ),
             child: Text(widget.backLabel ?? LoadingDialog.defaultBackLabel),
@@ -145,10 +149,8 @@ class _LoadingDialogState<T> extends State<LoadingDialog> {
   }
 }
 
-class LoadingDialogResult<T> {
-  final T? result;
-  final dynamic error;
-  final StackTrace? stackTrace;
+extension DeprecatedApiAccessExtension<T> on Result<T> {
+  T? get result => asValue?.value;
 
-  LoadingDialogResult({this.result, this.error, this.stackTrace});
+  Object? get error => asError?.error;
 }
